@@ -12,15 +12,25 @@ class BlockChain:
         previous_block = self.get_previous_block()
         previous_proof = previous_block["proof_of_work"]
         index = len(self.chain)+1
-        proof = self._proof_of_work(data=data, previous_proof=previous_proof, previous_block=previous_block)
-        return proof
+        proof = self._proof_of_work(data=data, previous_proof=previous_proof, index=index)
+        previous_hash = self._hash_block(block=previous_block)
+        return self.create_block(index=index, previous_hash=previous_hash, previous_block=previous_block, proof_of_work=proof, data=data)
+    
+
+
+    def _hash_block(self, block: dict):
+        encoded_block = _json.dumps(block, sort_keys=True).encode()
+        return _hash.sha256(encoded_block).hexdigest()
 
     def _to_digest(self,new_proof:int, previous_proof: int, index: int, data: str) -> bytes:
         to_digest =str(new_proof **2 - previous_proof **2 + index) + data
         return to_digest.encode()
+    
 
 
-    def _proof_of_work(self, previous_proof: str, index: int, data: str) -> int:
+
+
+    def _proof_of_work(self, previous_proof: int, index: int, data: str) -> int:
         new_proof = 1
         check_proof = False
 
@@ -28,12 +38,15 @@ class BlockChain:
             print(new_proof)
             to_digest = self._to_digest(new_proof=new_proof, previous_proof=previous_proof, index=index, data=data)
             hash_value = _hash.sha256(to_digest).hexdigest()
+            print(hash_value)
             if hash_value[:4] == '0000':
                 check_proof = True
             else:
                 new_proof += 1
         
         return new_proof
+    
+
     
     def get_previous_block(self):
         return self.chain[-1]
