@@ -8,6 +8,13 @@ class BlockChain:
         genesis_block = self.create_block(index=0, proof_of_work=1, previous_hash="0", data="Genesis Block")
         self.chain.append(genesis_block)
     
+    def mine_block(self, data:str):
+        previous_block = self.get_previous_block()
+        previous_proof = previous_block["proof_of_work"]
+        pass
+    def get_previous_block(self):
+        return self.chain[-1]
+    
     def create_block(self, index: int,proof_of_work: int, previous_hash:str, data: str) -> dict:
          block = {
              "index": index,
