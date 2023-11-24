@@ -11,7 +11,30 @@ class BlockChain:
     def mine_block(self, data:str):
         previous_block = self.get_previous_block()
         previous_proof = previous_block["proof_of_work"]
-        pass
+        index = len(self.chain)+1
+        proof = self._proof_of_work(data=data, previous_proof=previous_proof, previous_block=previous_block)
+        return proof
+
+    def _to_digest(self,new_proof:int, previous_proof: int, index: int, data: str) -> bytes:
+        to_digest =str(new_proof **2 - previous_proof **2 + index) + data
+        return to_digest.encode()
+
+
+    def _proof_of_work(self, previous_proof: str, index: int, data: str) -> int:
+        new_proof = 1
+        check_proof = False
+
+        while not check_proof:
+            print(new_proof)
+            to_digest = self._to_digest(new_proof=new_proof, previous_proof=previous_proof, index=index, data=data)
+            hash_value = _hash.sha256(to_digest).hexdigest()
+            if hash_value[:4] == '0000':
+                check_proof = True
+            else:
+                new_proof += 1
+        
+        return new_proof
+    
     def get_previous_block(self):
         return self.chain[-1]
     
