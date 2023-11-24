@@ -14,7 +14,9 @@ class BlockChain:
         index = len(self.chain)+1
         proof = self._proof_of_work(data=data, previous_proof=previous_proof, index=index)
         previous_hash = self._hash_block(block=previous_block)
-        return self.create_block(index=index, previous_hash=previous_hash, previous_block=previous_block, proof_of_work=proof, data=data)
+        block = self.create_block(index=index, previous_hash=previous_hash, previous_block=previous_block, proof_of_work=proof, data=data)
+        self.chain.append(block)
+        return 
     
 
 
